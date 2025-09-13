@@ -58,3 +58,6 @@ st.sidebar.header("Profile")
 st.sidebar.markdown("**Name :** Elizabeth Meliani")
 st.sidebar.markdown("**Email :** melzyunho@gmail.com")
 st.sidebar.markdown("**Bio :** Data Scientist Learner")
+
+# Link GitHub
+st.sidebar.markdown("📂 **GitHub :** [Laptop_Price_ML](https://github.com/Elizabeth-Meliani/Laptop_Price_ML)")
