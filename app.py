@@ -10,6 +10,17 @@ model = joblib.load("lasso_model.pkl")
 # Load dataset
 df = pd.read_csv("Laptop_price.csv")
 
+# Fungsi untuk memfilter data berdasarkan segmen
+def filter_segment(dataframe, segment_option):
+    if segment_option == "Entry-level":
+        return dataframe[(dataframe["Price"] >= 8000) & (dataframe["Price"] <= 12000)]
+    elif segment_option == "Mid-range":
+        return dataframe[(dataframe["Price"] >= 16000) & (dataframe["Price"] <= 19000)]
+    elif segment_option == "High-end":
+        return dataframe[(dataframe["Price"] >= 30000) & (dataframe["Price"] <= 34000)]
+    else:
+        return dataframe # Semua data
+
 # Judul Dashboard
 st.title("💻 Laptop Price Prediction")
 
@@ -32,25 +43,50 @@ input_data = pd.DataFrame([{
     "Weight": weight
 }])
 
+# Prediksi Harga
 predicted_price = model.predict(input_data)[0]
-st.subheader(f"💰 Predicted Price: Rp {int(predicted_price):,}")
+st.subheader("💰 Predicted Price")
+st.markdown(f"**Rp {predicted_price:,.0f}**")
 
-# Segmentasi Berdasarkan Harga
-if predicted_price <= 12000:
+# Segmentasi Berdasarkan Prediksi Harga
+if 8000 <= predicted_price <= 12000:
     segment = "Entry-level"
-elif predicted_price <= 19000:
+elif 16000 <= predicted_price <= 19000:
     segment = "Mid-range"
-else:
+elif 30000 <= predicted_price <= 34000:
     segment = "High-end"
+else:
+    segment = "Out of defined range"
 
-st.markdown(f"📊 Market Segment : **{segment}**")
+st.markdown(f"📊 Market Segment (Predicted): **{segment}**")
 
-# Histogram Distribusi Harga
-st.header("📈 Price Distribution")
-fig, ax = plt.subplots()
-sns.histplot(df["Price"], bins=30, kde=True, color="salmon", edgecolor="black", ax=ax)
-ax.axvline(predicted_price, color="blue", linestyle="--", label="Predicted Price")
+# Eksplorasi Segmen Pasar (Menggunakan fungsi filter_segment)
+st.header("🔍 Explore Market Segments")
+segment_option_data = st.selectbox("Pilih Segmen Harga untuk Dataframe", ["Entry-level", "Mid-range", "High-end"])
+filtered_df = filter_segment(df, segment_option_data)
+
+# Tampilkan Data Segmen
+st.subheader(f"📊 Data untuk Segmen: {segment_option_data}")
+st.dataframe(filtered_df)
+
+st.header("📈 Price Distribution by Segment")
+
+# Pilihan Segmen untuk Histogram (Menggunakan fungsi filter_segment)
+segment_option_plot = st.selectbox("Pilih Segmen Harga untuk Visualisasi", ["All", "Entry-level", "Mid-range", "High-end"])
+plot_df = filter_segment(df, segment_option_plot)
+
+# Plot Histogram
+fig, ax = plt.subplots(figsize=(8, 4))
+sns.histplot(plot_df["Price"], bins=30, kde=True, color="salmon", edgecolor="black", ax=ax)
+
+# Garis Prediksi Harga (jika masih relevan)
+ax.axvline(predicted_price, color="blue", linestyle="--", linewidth=2, label="Predicted Price")
+ax.set_title(f"Distribusi Harga - {segment_option_plot}", fontsize=14)
+ax.set_xlabel("Harga (dalam ribuan)", fontsize=12)
+ax.set_ylabel("Jumlah Unit", fontsize=12)
+ax.grid(True, linestyle="--", alpha=0.3)
 ax.legend()
+
 st.pyplot(fig)
 
 # Sidebar Profil
