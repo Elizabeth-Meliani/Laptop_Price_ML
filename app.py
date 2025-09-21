@@ -77,12 +77,16 @@ plot_df = filter_segment(df, segment_option_plot)
 fig, ax = plt.subplots(figsize=(8, 4))
 sns.histplot(plot_df["Price"], bins=30, kde=False, color="salmon", edgecolor="black", ax=ax)
 
-ax.axvline(predicted_price, color="blue", linestyle="--", linewidth=2)
+ax.axvline(predicted_price, color="blue", linestyle="--", linewidth=2, label=None)
 ax.set_title(f"Distribusi Harga - {segment_option_plot}", fontsize=14)
 ax.set_xlabel("Harga (dalam ribu rupiah)", fontsize=12)
 ax.set_ylabel("Jumlah Unit", fontsize=12)
 ax.grid(False)
 
+if ax.get_legend():
+    ax.get_legend().remove()
+
+# Tampilkan plot
 st.pyplot(fig)
 
 # Sidebar Profil
