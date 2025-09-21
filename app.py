@@ -58,8 +58,6 @@ elif 30000 <= predicted_price <= 34000:
 else:
     segment = "Out of defined range"
 
-st.markdown(f"📊 Market Segment (Predicted): **{segment}**")
-
 # Eksplorasi Segmen Pasar (Menggunakan fungsi filter_segment)
 st.header("🔍 Explore Market Segments")
 segment_option_data = st.selectbox("Pilih Segmen Harga untuk Dataframe", ["Entry-level", "Mid-range", "High-end"])
@@ -79,10 +77,9 @@ plot_df = filter_segment(df, segment_option_plot)
 fig, ax = plt.subplots(figsize=(8, 4))
 sns.histplot(plot_df["Price"], bins=30, kde=True, color="salmon", edgecolor="black", ax=ax)
 
-# Garis Prediksi Harga (jika masih relevan)
-ax.axvline(predicted_price, color="blue", linestyle="--", linewidth=2, label="Predicted Price")
+ax.axvline(predicted_price, color="blue", linestyle="--", linewidth=2)
 ax.set_title(f"Distribusi Harga - {segment_option_plot}", fontsize=14)
-ax.set_xlabel("Harga (dalam ribuan)", fontsize=12)
+ax.set_xlabel("Harga (dalam ribu rupiah)", fontsize=12)
 ax.set_ylabel("Jumlah Unit", fontsize=12)
 ax.grid(True, linestyle="--", alpha=0.3)
 ax.legend()
