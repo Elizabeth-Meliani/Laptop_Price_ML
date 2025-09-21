@@ -46,10 +46,9 @@ with st.form("Laptop Specs"):
             "Weight": weight
         }])
 
-
-# Prediksi Harga
-st.success(f"Predicted Price: Rp {predicted_price:,.0f}")
-st.caption("Prediksi dilakukan dengan model Lasso Regression.")
+        predicted_price = model.predict(input_data)[0]
+        st.success(f"Predicted Price: Rp {predicted_price:,.0f}")
+        st.caption("Model : Lasso Regression")
 
 # Segmentasi Berdasarkan Prediksi Harga
 if 8000 <= predicted_price <= 12000:
