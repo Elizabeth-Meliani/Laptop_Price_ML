@@ -22,31 +22,34 @@ def filter_segment(dataframe, segment_option):
         return dataframe # Semua data
 
 # Judul Dashboard
-st.title("💻 Laptop Price Prediction")
+st.title("💻 Laptop Price Prediction App")
 
-# Form Input Spesifikasi Laptop
-st.header("🛠️ Input Laptop Specifications")
-processor_speed = st.slider("Processor Speed (GHz)", 1.0, 4.0, 2.5)
-ram_size = st.slider("RAM Size (GB)", 4, 64, 8)
-storage_capacity = st.slider("Storage Capacity (GB)", 128, 2000, 512)
-screen_size = st.slider("Screen Size (inch)", 10.0, 17.0, 15.6)
-weight = st.slider("Weight (kg)", 1.0, 5.0, 2.3)
-brand = st.selectbox("Brand", df["Brand"].unique())
+with st.form("Laptop Specs"):
+    st.header("🛠️ Input Laptop Specifications")
+
+    processor_speed = st.slider("Processor Speed (GHz)", 1.0, 4.0, 2.5)
+    ram_size = st.slider("RAM Size (GB)", 4, 64, 8)
+    storage_capacity = st.slider("Storage Capacity (GB)", 128, 2000, 512)
+    screen_size = st.slider("Screen Size (inch)", 10.0, 17.0, 15.6)
+    weight = st.slider("Weight (kg)", 1.0, 5.0, 2.3)
+    brand = st.selectbox("Brand", df["Brand"].unique())
+
+    submitted = st.form_submit_button("Predict")
+
+    if submitted:
+        input_data = pd.DataFrame([{
+            "Brand": brand,
+            "Processor_Speed": processor_speed,
+            "RAM_Size": ram_size,
+            "Storage_Capacity": storage_capacity,
+            "Screen_Size": screen_size,
+            "Weight": weight
+        }])
+
 
 # Prediksi Harga
-input_data = pd.DataFrame([{
-    "Brand": brand,
-    "Processor_Speed": processor_speed,
-    "RAM_Size": ram_size,
-    "Storage_Capacity": storage_capacity,
-    "Screen_Size": screen_size,
-    "Weight": weight
-}])
-
-# Prediksi Harga
-predicted_price = model.predict(input_data)[0]
-st.subheader("💰 Predicted Price")
-st.markdown(f"**Rp {predicted_price:,.0f}**")
+st.success(f"Predicted Price: Rp {predicted_price:,.0f}")
+st.caption("Prediksi dilakukan dengan model Lasso Regression.")
 
 # Segmentasi Berdasarkan Prediksi Harga
 if 8000 <= predicted_price <= 12000:
@@ -64,7 +67,7 @@ segment_option_data = st.selectbox("Pilih Segmen Harga untuk Dataframe", ["Entry
 filtered_df = filter_segment(df, segment_option_data)
 
 # Tampilkan Data Segmen
-st.subheader(f"📊 Data untuk Segmen: {segment_option_data}")
+st.subheader(f"📊 Segment: {segment_option_data}")
 st.dataframe(filtered_df)
 
 st.header("📈 Price Distribution by Segment")
@@ -75,7 +78,7 @@ plot_df = filter_segment(df, segment_option_plot)
 
 # Plot Histogram
 fig, ax = plt.subplots(figsize=(8, 4))
-sns.histplot(plot_df["Price"], bins=30, kde=True, color="salmon", edgecolor="black", ax=ax)
+sns.histplot(plot_df["Price"], bins=30, kde=False, color="salmon", edgecolor="black", ax=ax)
 
 ax.axvline(predicted_price, color="blue", linestyle="--", linewidth=2)
 ax.set_title(f"Distribusi Harga - {segment_option_plot}", fontsize=14)
