@@ -81,8 +81,7 @@ ax.axvline(predicted_price, color="blue", linestyle="--", linewidth=2)
 ax.set_title(f"Distribusi Harga - {segment_option_plot}", fontsize=14)
 ax.set_xlabel("Harga (dalam ribu rupiah)", fontsize=12)
 ax.set_ylabel("Jumlah Unit", fontsize=12)
-ax.grid(True, linestyle="--", alpha=0.3)
-ax.legend()
+ax.grid(False)
 
 st.pyplot(fig)
 
